@@ -1,6 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 type Feature = {
   title: string;
@@ -24,7 +27,6 @@ const FEATURES: Feature[] = [
     title: "Integrations",
     descriptionLines: [
       "Payments, logins, emails & more.",
-      
       "We connect everything so you’re ready to",
       " onboard users from day one.",
     ],
@@ -44,10 +46,57 @@ const FEATURES: Feature[] = [
 ];
 
 const WhyLaunchPad = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const introItems = gsap.utils.toArray<HTMLElement>(".whylaunchpad-intro");
+
+      if (introItems.length) {
+        gsap.from(introItems, {
+          opacity: 0,
+          y: 20,
+          duration: 0.7,
+          ease: "power2.out",
+          stagger: 0.14,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        });
+      }
+
+      gsap.from(".whylaunchpad-card", {
+        opacity: 0,
+        y: 32,
+        duration: 0.8,
+        ease: "power3.out",
+        stagger: 0.18,
+        scrollTrigger: {
+          trigger: ".whylaunchpad-grid",
+          start: "top 80%",
+          once: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="flex w-full flex-col items-center bg-white px-6 py-24">
+    <section
+      ref={sectionRef}
+      className="flex w-full flex-col items-center bg-white px-6 py-24"
+    >
       <div className="flex w-full max-w-5xl flex-col items-center text-center">
-        <div className="rounded-[31px] bg-[linear-gradient(90deg,#CEE3FF_0%,#C5F4FF_100%)] p-px">
+        <div className="whylaunchpad-intro rounded-[31px] bg-[linear-gradient(90deg,#CEE3FF_0%,#C5F4FF_100%)] p-px">
           <div className="relative flex items-center gap-3 rounded-[83px] bg-white px-6 py-2">
             <div className="relative h-[18px] w-[18px]">
               <span className="absolute inset-0 rounded-full bg-[rgba(7,100,218,0.2)]" />
@@ -64,25 +113,24 @@ const WhyLaunchPad = () => {
         </div>
 
         <h2
-          className="mt-8 max-w-3xl text-[28px] font-semibold leading-[31px] text-[#202020]"
+          className="whylaunchpad-intro mt-8 max-w-3xl text-[28px] font-semibold leading-[31px] text-[#202020]"
           style={{ fontFamily: '"Plus Jakarta Sans", var(--font-sans)' }}
         >
           Built faster Built smarter Built by founders
         </h2>
 
         <p
-          className="mt-4 max-w-3xl text-[16px] font-medium leading-[31px] text-[#525252]"
+          className="whylaunchpad-intro mt-4 max-w-3xl text-[16px] font-medium leading-[31px] text-[#525252]"
           style={{ fontFamily: '"Plus Jakarta Sans", var(--font-sans)' }}
         >
-          MVPs built faster, smarter, and better — by founders who&apos;ve done it
-          before.
+          MVPs built faster, smarter, and better — by founders who&apos;ve done it before.
           <br />
-          We turn your idea into a launch-ready product in just <strong>2 weeks,</strong> using
-          modern tech and proven systems trusted by <strong>50+ funded startups</strong>.
+          We turn your idea into a launch-ready product in just <strong>2 weeks,</strong> using modern tech and proven
+          systems trusted by <strong>50+ funded startups</strong>.
         </p>
       </div>
 
-      <div className="mt-16 grid w-full max-w-[1228px] justify-center gap-[43px] lg:grid-cols-3">
+      <div className="whylaunchpad-grid mt-16 grid w-full max-w-[1228px] justify-center gap-[43px] lg:grid-cols-3">
         {FEATURES.map((feature) => (
           <FeatureCard key={feature.title} {...feature} />
         ))}
@@ -93,7 +141,7 @@ const WhyLaunchPad = () => {
 
 const FeatureCard = ({ title, descriptionLines, image, alt }: Feature) => {
   return (
-    <div className="flex h-[415px] w-[350px] flex-col rounded-[16px] bg-white shadow-[0_2px_21px_rgba(0,0,0,0.1)]">
+    <div className="whylaunchpad-card flex h-[415px] w-[350px] flex-col rounded-[16px] bg-white shadow-[0_2px_21px_rgba(0,0,0,0.1)]">
       <div className="mx-2 mt-2 ">
         <Image
           src={image}

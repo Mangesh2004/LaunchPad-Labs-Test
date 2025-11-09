@@ -1,6 +1,10 @@
+'use client';
+
 import Image from "next/image";
-import { Check } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 type Package = {
   id: string;
@@ -64,10 +68,50 @@ const packages: Package[] = [
 const textStyle = { fontFamily: '"Plus Jakarta Sans", var(--font-sans)' };
 
 const PricingPage = () => {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      gsap.from(".pricing-intro", {
+        opacity: 0,
+        y: 18,
+        duration: 0.65,
+        ease: "power2.out",
+        stagger: 0.12,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 85%",
+          once: true,
+        },
+      });
+
+      gsap.from(".pricing-card", {
+        opacity: 0,
+        y: 28,
+        duration: 0.75,
+        ease: "power3.out",
+        stagger: 0.16,
+        scrollTrigger: {
+          trigger: ".pricing-grid",
+          start: "top 80%",
+          once: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="bg-[#F3F7F8]">
-      <section className="mx-auto flex w-full max-w-[1200px] flex-col items-center px-6 py-20 text-center lg:py-28">
-        <div className="rounded-[31px] bg-[linear-gradient(90deg,#CEE3FF_0%,#C5F4FF_100%)] p-px">
+    <div ref={sectionRef} className="bg-[#F3F7F8]">
+      <section className="pricing-intro mx-auto flex w-full max-w-[1200px] flex-col items-center px-6 py-20 text-center lg:py-28">
+        <div className="pricing-intro rounded-[31px] bg-[linear-gradient(90deg,#CEE3FF_0%,#C5F4FF_100%)] p-px">
           <div className="relative flex items-center gap-3 rounded-[83px] bg-white px-6 py-2">
             <div className="relative h-[18px] w-[18px]">
               <span className="absolute inset-0 rounded-full bg-[rgba(7,100,218,0.2)]" />
@@ -83,24 +127,24 @@ const PricingPage = () => {
           </div>
         </div>
         <h1
-          className="mt-8 max-w-[740px] text-[28px] font-semibold leading-[31px] text-[#202020]"
+          className="pricing-intro mt-8 max-w-[740px] text-[28px] font-semibold leading-[31px] text-[#202020]"
           style={textStyle}
         >
           Two ways to launch fast – and keep growing even faster
         </h1>
         <p
-          className="mt-4 max-w-[463px] text-[16px] font-medium leading-[31px] text-[#525252]"
+          className="pricing-intro mt-4 max-w-[463px] text-[16px] font-medium leading-[31px] text-[#525252]"
           style={textStyle}
         >
           Choose the perfect package to launch and grow your startup
         </p>
       </section>
 
-      <section className="mx-auto flex w-full rounded-2xl max-w-[1200px] flex-col gap-10 px-6 pb-24 lg:flex-row lg:items-start lg:justify-center lg:gap-12 lg:pb-32">
+      <section className="pricing-grid mx-auto flex w-full max-w-[1200px] flex-col gap-10 px-6 pb-24 lg:flex-row lg:items-start lg:justify-center lg:gap-12 lg:pb-32">
         {packages.map((pkg) => (
           <article
             key={pkg.id}
-            className={`relative flex w-full max-w-[440px] flex-col rounded-[20px] ${
+            className={`pricing-card relative flex w-full max-w-[440px] flex-col rounded-[20px] ${
               pkg.isHighlighted
                 ? "bg-[#B5DEFF] p-1 shadow-[0px_7px_21px_rgba(194,228,255,1)]"
                 : "bg-[#F5F5F5] p-1"

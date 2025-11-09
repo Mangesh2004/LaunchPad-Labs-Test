@@ -1,4 +1,9 @@
+'use client';
+
 import Image from "next/image";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const trustedLogos = [
   { alt: "Amazon", src: "/hero/logo-amazon.png" },
@@ -9,20 +14,59 @@ const trustedLogos = [
 ];
 
 export default function TrustedByMarquee() {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
   const marqueeLogos = [...trustedLogos, ...trustedLogos];
 
+  useEffect(() => {
+    if (!sectionRef.current) {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const section = sectionRef.current;
+
+    const ctx = gsap.context(() => {
+      gsap.from(".trusted-heading", {
+        opacity: 0,
+        y: 16,
+        duration: 0.6,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: section,
+          start: "top 85%",
+          once: true,
+        },
+      });
+
+      gsap.from(".trusted-track", {
+        opacity: 0,
+        y: 24,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: section,
+          start: "top 80%",
+          once: true,
+        },
+      });
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="relative w-full">
+    <div ref={sectionRef} className="relative w-full">
       <p
-        className="text-sm text-center font-semibold uppercase tracking-[0.18em] text-[#555555]"
+        className="trusted-heading text-center text-sm font-semibold uppercase tracking-[0.18em] text-[#555555]"
         style={{ fontFamily: '"Plus Jakarta Sans", var(--font-sans)' }}
       >
         Trusted by Founders from
       </p>
 
-      <div className="relative mt-8 overflow-hidden rounded-[32px] bg-transparent  py-8 backdrop-blur">
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-[30%] bg-linear-to-r from-[#F6FAFF] to-transparent z-10" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-[30%] bg-linear-to-l from-[#F6FAFF] to-transparent z-10" />
+      <div className="trusted-track relative mt-8 overflow-hidden rounded-[32px] bg-transparent py-8 backdrop-blur">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[30%] bg-linear-to-r from-[#F6FAFF] to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[30%] bg-linear-to-l from-[#F6FAFF] to-transparent" />
 
         <div className="hero-marquee flex w-max items-center gap-16">
           {marqueeLogos.map((logo, index) => (
@@ -44,4 +88,4 @@ export default function TrustedByMarquee() {
       </div>
     </div>
   );
-};
+}

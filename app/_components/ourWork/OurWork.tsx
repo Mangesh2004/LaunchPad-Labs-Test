@@ -1,5 +1,8 @@
 "use client";
 import Image from "next/image";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const WORK_ITEMS = [
   {
@@ -26,7 +29,7 @@ const WORK_ITEMS = [
 
 const OurWorkCard = ({ name, image }: { name: string; image: string }) => {
   return (
-    <div className="flex h-[316px] w-[381px] shrink-0 flex-col rounded-[16px] bg-white shadow-[0_0_21px_rgba(0,0,0,0.1)]">
+    <div className="our-work-card flex h-[316px] w-[381px] shrink-0 flex-col rounded-[16px] bg-white shadow-[0_0_21px_rgba(0,0,0,0.1)]">
       <div className="mx-2 mt-2 flex-1 overflow-hidden rounded-[8px] border-6 border-[#B9DDFB]">
         <Image
           src={image}
@@ -77,12 +80,70 @@ const ArrowIcon = () => (
 );
 
 const OurWork = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const marqueeItems = [...WORK_ITEMS, ...WORK_ITEMS];
 
+  useEffect(() => {
+    if (!sectionRef.current) {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const introItems = gsap.utils.toArray<HTMLElement>(".ourwork-intro");
+
+      if (introItems.length) {
+        gsap.from(introItems, {
+          opacity: 0,
+          y: 18,
+          duration: 0.7,
+          ease: "power2.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        });
+      }
+
+      gsap.from(".our-work-track", {
+        opacity: 0,
+        y: 24,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".our-work-track",
+          start: "top 80%",
+          once: true,
+        },
+      });
+
+      gsap.from(".our-work-card", {
+        opacity: 0,
+        y: 30,
+        duration: 0.7,
+        ease: "power2.out",
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: ".our-work-track",
+          start: "top 75%",
+          once: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="flex w-full flex-col items-center bg-[#F3F7F8] px-6 py-24">
+    <section
+      ref={sectionRef}
+      className="flex w-full flex-col items-center bg-[#F3F7F8] px-6 py-24"
+    >
       <div className="flex w-full max-w-5xl flex-col items-center text-center">
-        <div className="rounded-[31px] bg-[linear-gradient(90deg,#CEE3FF_0%,#C5F4FF_100%)] p-[1px]">
+        <div className="ourwork-intro rounded-[31px] bg-[linear-gradient(90deg,#CEE3FF_0%,#C5F4FF_100%)] p-[1px]">
           <div className="relative flex items-center gap-3 rounded-[83px] bg-white px-6 py-2">
             <div className="relative h-[18px] w-[18px]">
               <span className="absolute inset-0 rounded-full bg-[rgba(7,100,218,0.2)]" />
@@ -99,14 +160,14 @@ const OurWork = () => {
         </div>
 
         <h2
-          className="mt-8 max-w-2xl text-center text-[28px] font-semibold leading-[31px] text-[#202020]"
+          className="ourwork-intro mt-8 max-w-2xl text-center text-[28px] font-semibold leading-[31px] text-[#202020]"
           style={{ fontFamily: '"Plus Jakarta Sans", var(--font-sans)' }}
         >
           Every product here went from idea to live in 2 weeks
         </h2>
 
         <p
-          className="mt-4 text-center text-[16px] font-medium leading-[31px] text-[#525252]"
+          className="ourwork-intro mt-4 text-center text-[16px] font-medium leading-[31px] text-[#525252]"
           style={{ fontFamily: '"Plus Jakarta Sans", var(--font-sans)' }}
         >
           Built, launched, and loved by real users
@@ -114,7 +175,7 @@ const OurWork = () => {
       </div>
 
       <div className="mt-14 w-full overflow-hidden">
-        <div className="marquee-track flex gap-[43px]" aria-hidden="true">
+        <div className="our-work-track marquee-track flex gap-[43px]" aria-hidden="true">
           {marqueeItems.map((item, index) => (
             <OurWorkCard key={`${item.name}-${index}`} {...item} />
           ))}

@@ -1,4 +1,4 @@
-import BookCall from "../components/bookCall/BookCall";
+import BookCall from "../_components/bookCall/BookCall";
 import Topbar from "./_components/Topbar";
 import MainComponent from "./_components/MainComponent";
 

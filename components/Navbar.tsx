@@ -38,12 +38,13 @@ export const Navbar = () => {
     <header className="sticky top-0 z-50 w-full border-b border-white/20 bg-transparent backdrop-blur">
       <div className="mx-auto w-full px-4">
         <div className="relative flex items-center gap-6 px-6 py-3">
+        <Link href="/">
         <Image
         alt="LaunchPad Labs logo"
         height={32}
         src="/navbar/Logo.png"
         width={200}
-      />
+      /></Link>
           <nav className="mx-auto hidden ml-120 gap-12 text-sm font-medium text-neutral-800 md:flex">
             {NAV_ITEMS.map((item) => (
               <Link

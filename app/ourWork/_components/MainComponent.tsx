@@ -1,5 +1,10 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const textStyle = { fontFamily: '"Plus Jakarta Sans", var(--font-sans)' };
 
@@ -43,13 +48,43 @@ const workHighlights: WorkCard[] = [
 ];
 
 const MainComponent = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      gsap.from(".work-card", {
+        opacity: 0,
+        y: 24,
+        duration: 0.75,
+        ease: "power3.out",
+        stagger: 0.15,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          once: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="bg-[#F3F7F8] pb-20 px-6 pt-3 lg:px-10">
+    <section
+      ref={sectionRef}
+      className="bg-[#F3F7F8] pb-20 px-6 pt-3 lg:px-10"
+    >
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-10">
         {workHighlights.map((item) => (
           <article
             key={item.title}
-            className="flex flex-col gap-8 rounded-[16px] bg-white p-4 pl-10 shadow-[0_2px_21px_rgba(0,0,0,0.1)] lg:flex-row lg:items-center lg:justify-between"
+            className="work-card flex flex-col gap-8 rounded-[16px] bg-white p-4 pl-10 shadow-[0_2px_21px_rgba(0,0,0,0.1)] lg:flex-row lg:items-center lg:justify-between"
           >
             <div className="flex max-w-[660px] flex-col gap-6">
               <div className="flex flex-col gap-2">

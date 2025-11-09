@@ -2,6 +2,9 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const TESTIMONIAL_COLUMNS = [
   [
@@ -53,8 +56,54 @@ const TESTIMONIAL_COLUMNS = [
 ];
 
 const Testimonials = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) {
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const introItems = gsap.utils.toArray<HTMLElement>(".testimonials-intro");
+
+      if (introItems.length) {
+        gsap.from(introItems, {
+          opacity: 0,
+          y: 18,
+          duration: 0.7,
+          ease: "power2.out",
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 85%",
+            once: true,
+          },
+        });
+      }
+
+      gsap.from(".testimonial-columns", {
+        opacity: 0,
+        y: 32,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".testimonial-columns",
+          start: "top 80%",
+          once: true,
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="relative flex w-full flex-col h-screen items-center overflow-hidden bg-white px-6">
+    <section
+      ref={sectionRef}
+      className="relative flex h-screen w-full flex-col items-center overflow-hidden bg-white px-6"
+    >
       <Image
         src="/testimonials/Ellipse.png"
         alt="Background blur"
@@ -63,15 +112,16 @@ const Testimonials = () => {
         className="pointer-events-none absolute inset-0 z-10 object-cover"
         priority
       />
-      
 
-      <LabelPill label="Testimonials" />
+      <div className="testimonials-intro">
+        <LabelPill label="Testimonials" />
+      </div>
       <div className="py-5" />
 
       <div className="flex w-full max-w-[1228px] flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex w-full max-w-[470px] flex-col gap-8">
           <h2
-            className="text-[28px] z-10 font-semibold leading-[38px] text-[#202020]"
+            className="testimonials-intro z-10 text-[28px] font-semibold leading-[38px] text-[#202020]"
             style={{ fontFamily: '"Plus Jakarta Sans", var(--font-sans)' }}
           >
             What Founders Are Saying About LaunchPad Labs
@@ -88,7 +138,7 @@ const Testimonials = () => {
           </div>
         </div>
 
-        <div className="relative flex w-full max-w-[640px] flex-col lg:flex-row">
+        <div className="testimonial-columns relative flex w-full max-w-[640px] flex-col lg:flex-row">
           
           {TESTIMONIAL_COLUMNS.map((column, columnIndex) => {
             const isFirstColumn = columnIndex === 0;
