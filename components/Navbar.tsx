@@ -7,15 +7,15 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
 const NAV_ITEMS = [
-  { name: "How It Works", link: "#how-it-works" },
-  { name: "Our Work", link: "#our-work" },
-  { name: "Our Process", link: "#our-process" },
-  { name: "Founder", link: "#founder" },
-  { name: "Pricing", link: "#pricing" },
+  { name: "How It Works", link: "/#how-it-works" },
+  { name: "Our Work", link: "/ourWork" },
+  { name: "Our Process", link: "/#our-process" },
+  { name: "Founder", link: "/founder" },
+  { name: "Pricing", link: "/pricing" },
 ];
 
 const Logo = () => (
-  <Link href="#" className="flex items-center gap-3">
+  <Link href="/" className="flex items-center gap-3">
     <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white shadow-[0px_10px_30px_rgba(31,117,255,0.15)]">
       
     </span>

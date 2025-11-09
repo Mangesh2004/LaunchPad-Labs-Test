@@ -1,19 +1,16 @@
-import Navbar from "@/components/Navbar";
-import HeroSection from "@/app/components/herosection/HeroSection";
-import TrustedByMarquee from "@/app/components/herosection/TrustedByMarquee";
-import OurImpact from "./components/ourImpact/OurImpact";
-import OurWork from "./components/ourWork/OurWork";
-import WhyLaunchPad from "./components/whyLaunchPad/WhyLaunchPad";
-import OurApproach from "./components/ourApproach/OurApproach";
-import OurProcess from "./components/ourProcess/OurProcess";
-import Testimonials from "./components/testimonials/Testimonials";
-import BookCall from "./components/bookCall/BookCall";
-import Footer from "./components/footer/Footer";
+import HeroSection from "@/app/_components/herosection/HeroSection";
+import TrustedByMarquee from "@/app/_components/herosection/TrustedByMarquee";
+import OurImpact from "./_components/ourImpact/OurImpact";
+import OurWork from "@/app/_components/ourWork/OurWork";
+import WhyLaunchPad from "./_components/whyLaunchPad/WhyLaunchPad";
+import OurApproach from "./_components/ourApproach/OurApproach";
+import OurProcess from "./_components/ourProcess/OurProcess";
+import Testimonials from "./_components/testimonials/Testimonials";
+import BookCall from "./_components/bookCall/BookCall";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#F6FAFF]">
-      <Navbar />
+    <div className="bg-[#F6FAFF]">
       <HeroSection />
       <TrustedByMarquee />
       <OurImpact />
@@ -23,7 +20,6 @@ export default function Home() {
       <OurProcess />
       <Testimonials />
       <BookCall />
-      <Footer />
-    </main>
+    </div>
   );
 }
